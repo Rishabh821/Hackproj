@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Driver Tracking</h2>
+<p id="status">Waiting...</p>
+
+<script>
+navigator.geolocation.watchPosition(
+  (pos) => {
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+
+    document.getElementById("status").innerText =
+      "Lat: " + lat + " Lng: " + lng;
+
+    fetch("https://unwadeable-isis-unexclaiming.ngrok-free.dev/update?lat=" + lat + "&lng=" + lng, {
+      method: "POST"
+    });
+  },
+  (err) => {
+    document.getElementById("status").innerText =
+      "ERROR: " + err.message;
+  },
+  { enableHighAccuracy: true }
+);
+</script>
+
+</body>
+</html>
