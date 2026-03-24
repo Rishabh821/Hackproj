@@ -18,8 +18,8 @@ app.add_middleware(
 )
 
 bus = {
-    "lat": 28.6139,
-    "lng": 77.2090
+    "lat": 28.3399,
+    "lng": 79.3895
 }
 
 @app.get("/")
