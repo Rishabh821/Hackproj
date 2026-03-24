@@ -1,9 +1,11 @@
 import L from "leaflet";
 import busIcon from "./assets/images.png";
 
+import LiveCard from "./components/LiveCard";
 import Header from "./components/Header";
 import MapView from "./components/Mapview.jsx";
 import useBusLocation from "./hooks/useBusLocation";
+import { Timeline } from "./components/Timeline.jsx";
 
 function App() {
   const position = useBusLocation();
@@ -27,8 +29,12 @@ function App() {
    <div className="h-screen flex flex-col">
   <Header />
   
-  <div className="flex-1">
-    <MapView position={position} stops={stops} icon={myBus} />
+  <div className="flex flex-1">
+    <div className= "w-2/3 h-full"><MapView position={position} stops={stops} icon={myBus} /></div>
+    <div className="w-1/3 h-full bg-gray-900 text-white p-4 space-y-3">
+    <LiveCard />
+    <Timeline />
+    </div>
   </div>
 </div>
   );
