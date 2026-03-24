@@ -24,10 +24,13 @@ function App() {
   });
 
   return (
-    <div style={{ height: "100vh" }}>
-      <Header />
-      <MapView position={position} stops={stops} icon={myBus} />
-    </div>
+   <div className="h-screen flex flex-col">
+  <Header />
+  
+  <div className="flex-1">
+    <MapView position={position} stops={stops} icon={myBus} />
+  </div>
+</div>
   );
 }
 
