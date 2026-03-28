@@ -31,7 +31,7 @@ function App() {
   
   <div className="flex flex-1">
     <div className= "w-2/3 h-full"><MapView position={position} stops={stops} icon={myBus} /></div>
-    <div className="w-1/3 h-full bg-gray-900 text-white p-4 space-y-3">
+    <div className="w-1/3 h-full bg-linear-to-b from-gray-950 to-gray-900 text-white p-5 space-y-5">
     <LiveCard />
     <Timeline />
     </div>
