@@ -1,28 +1,112 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <title>Driver Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 15px;
+      margin-top: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+
+    .start { background: #22c55e; }
+    .stop { background: #ef4444; }
+
+    .status {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+
 <body>
-<h2>Driver Tracking</h2>
-<p id="status">Waiting...</p>
+
+  <h2>🚌 Driver Panel</h2>
+
+  <div class="card">
+    <h3>Bus: 101</h3>
+
+    <button id="toggleBtn" class="start">Start Tracking</button>
+
+    <div class="status" id="status">Tracking OFF</div>
+    <div class="status" id="coords">Waiting...</div>
+  </div>
 
 <script>
-navigator.geolocation.watchPosition(
-  (pos) => {
-    const lat = pos.coords.latitude;
-    const lng = pos.coords.longitude;
+let watchId = null;
+let tracking = false;
 
-    document.getElementById("status").innerText =
-      "Lat: " + lat + " Lng: " + lng;
+const btn = document.getElementById("toggleBtn");
+const status = document.getElementById("status");
+const coords = document.getElementById("coords");
 
-    fetch("https://unwadeable-isis-unexclaiming.ngrok-free.dev/update?lat=" + lat + "&lng=" + lng, {
-      method: "POST"
-    });
-  },
-  (err) => {
-    document.getElementById("status").innerText =
-      "ERROR: " + err.message;
-  },
-  { enableHighAccuracy: true }
-);
+btn.onclick = () => {
+  if (!tracking) {
+    startTracking();
+  } else {
+    stopTracking();
+  }
+};
+
+function startTracking() {
+  if (!navigator.geolocation) {
+    status.innerText = "Geolocation not supported";
+    return;
+  }
+
+  tracking = true;
+  btn.innerText = "Stop Tracking";
+  btn.className = "stop";
+  status.innerText = "Tracking ON";
+
+  watchId = navigator.geolocation.watchPosition(
+    (pos) => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+
+      coords.innerText = `Lat: ${lat} | Lng: ${lng}`;
+
+      fetch("https://unwadeable-isis-unexclaiming.ngrok-free.dev/update?lat=" + lat + "&lng=" + lng, {
+        method: "POST"
+      });
+    },
+    (err) => {
+      status.innerText = "Error: " + err.message;
+    },
+    { enableHighAccuracy: true }
+  );
+}
+
+function stopTracking() {
+  tracking = false;
+  btn.innerText = "Start Tracking";
+  btn.className = "start";
+  status.innerText = "Tracking OFF";
+
+  navigator.geolocation.clearWatch(watchId);
+}
 </script>
 
 </body>
