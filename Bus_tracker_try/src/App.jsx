@@ -20,23 +20,34 @@ function App() {
 
   const myBus = L.icon({
     iconUrl: busIcon,
-    iconSize: [45, 50],
-    iconAnchor: [22, 94],
-    popupAnchor: [-3, -76]
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
   });
 
   return (
-   <div className="h-screen flex flex-col">
-  <Header />
-  
-  <div className="flex flex-1">
-    <div className= "w-2/3 h-full"><MapView position={position} stops={stops} icon={myBus} /></div>
-    <div className="w-1/3 h-full bg-gray-900 text-white p-4 space-y-3">
-    <LiveCard />
-    <Timeline />
+    <div className="h-screen flex flex-col bg-[#020617] text-white">
+
+      {/* HEADER */}
+      <Header />
+
+      {/* LIVE CARD */}
+      <div className="p-3">
+        <LiveCard />
+      </div>
+
+      {/* MAP */}
+      <div className="flex-1">
+        {position && (
+          <MapView position={position} stops={stops} icon={myBus} />
+        )}
+      </div>
+
+      {/* BOTTOM SECTION */}
+      <div className="bg-[#020617] border-t border-gray-800 p-4 max-h-[35%] overflow-y-auto">
+        <Timeline />
+      </div>
+
     </div>
-  </div>
-</div>
   );
 }
 

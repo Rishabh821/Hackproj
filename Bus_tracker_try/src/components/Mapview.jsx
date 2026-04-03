@@ -4,7 +4,11 @@ import Stops from "./Stops";
 
 export default function MapView({ position, stops, icon }) {
   return (
-    <MapContainer center={position} zoom={12} style={{ height: "100%" }}>
+    <MapContainer
+  center={position}
+  zoom={14}
+  style={{ height: "100%", width: "100%" }}
+>
       <TileLayer
         attribution="&copy; OpenStreetMap"
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
