@@ -5,53 +5,130 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
     body {
-      font-family: Arial;
-      background: #0f172a;
-      color: white;
-      text-align: center;
+      background: linear-gradient(180deg, #020617, #020617 40%, #0f172a);
+      color: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 380px;
       padding: 20px;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+      color: #f1f5f9;
     }
 
     .card {
-      background: #1e293b;
-      padding: 20px;
-      border-radius: 15px;
-      margin-top: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      backdrop-filter: blur(20px);
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      text-align: center;
+    }
+
+    .bus {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 15px;
+      color: #cbd5f5;
     }
 
     button {
-      padding: 12px 20px;
+      width: 100%;
+      padding: 14px;
       border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      margin-top: 15px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 500;
+      margin-top: 10px;
       cursor: pointer;
+      transition: all 0.25s ease;
     }
 
-    .start { background: #22c55e; }
-    .stop { background: #ef4444; }
+    .start {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+    }
+
+    .start:hover {
+      transform: scale(1.03);
+      opacity: 0.95;
+    }
+
+    .stop {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+    }
+
+    .stop:hover {
+      transform: scale(1.03);
+      opacity: 0.95;
+    }
 
     .status {
-      margin-top: 10px;
-      font-size: 14px;
+      margin-top: 15px;
+      font-size: 13px;
       color: #94a3b8;
     }
+
+    .coords {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #64748b;
+      word-break: break-word;
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      background: #22c55e;
+      box-shadow: 0 0 10px #22c55e;
+    }
+
   </style>
 </head>
 
 <body>
 
-  <h2>🚌 Driver Panel</h2>
+  <div class="container">
+    <div class="title">🚌 Driver Panel</div>
 
-  <div class="card">
-    <h3>Bus: 101</h3>
+    <div class="card">
+      <div class="bus">Bus 101</div>
 
-    <button id="toggleBtn" class="start">Start Tracking</button>
+      <button id="toggleBtn" class="start">Start Tracking</button>
 
-    <div class="status" id="status">Tracking OFF</div>
-    <div class="status" id="coords">Waiting...</div>
+      <div class="status" id="status">
+        Tracking OFF
+      </div>
+
+      <div class="coords" id="coords">
+        Waiting for location...
+      </div>
+    </div>
   </div>
 
 <script>
@@ -79,14 +156,15 @@ function startTracking() {
   tracking = true;
   btn.innerText = "Stop Tracking";
   btn.className = "stop";
-  status.innerText = "Tracking ON";
+
+  status.innerHTML = `<span class="live-dot"></span>Tracking ON`;
 
   watchId = navigator.geolocation.watchPosition(
     (pos) => {
       const lat = pos.coords.latitude;
       const lng = pos.coords.longitude;
 
-      coords.innerText = `Lat: ${lat} | Lng: ${lng}`;
+      coords.innerText = `Lat: ${lat.toFixed(5)} | Lng: ${lng.toFixed(5)}`;
 
       fetch("https://unwadeable-isis-unexclaiming.ngrok-free.dev/update?lat=" + lat + "&lng=" + lng, {
         method: "POST"
