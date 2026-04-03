@@ -166,7 +166,9 @@ function startTracking() {
 
       coords.innerText = `Lat: ${lat.toFixed(5)} | Lng: ${lng.toFixed(5)}`;
 
-      fetch("https://unwadeable-isis-unexclaiming.ngrok-free.dev/update?lat=" + lat + "&lng=" + lng, {
+      const busId = "BUS102"; // temporary (later from QR)
+
+      fetch(`https://unwadeable-isis-unexclaiming.ngrok-free.dev/update?bus_id=${busId}&lat=${lat}&lng=${lng}`, {
         method: "POST"
       });
     },
