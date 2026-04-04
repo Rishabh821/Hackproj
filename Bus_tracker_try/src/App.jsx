@@ -89,7 +89,7 @@ function App() {
 
       {/* LIVE CARD */}
       <div className="p-3">
-        <LiveCard />
+        <LiveCard position={position} selectedBus={selectedBus} />
       </div>
 
       {/* MAP */}

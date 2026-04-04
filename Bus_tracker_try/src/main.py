@@ -44,6 +44,16 @@ def update_location(bus_id: str, lat: float, lng: float):
 @app.get("/buses")
 def get_all_buses():
     return buses
+@app.post("/sos")
+def sos(bus_id: str, lat: float, lng: float):
+    print(f"🚨 SOS ALERT from {bus_id} at {lat}, {lng}")
+
+    return {
+        "status": "SOS received",
+        "bus_id": bus_id,
+        "lat": lat,
+        "lng": lng
+    }
 
 @app.get("/driver")
 def driver():
