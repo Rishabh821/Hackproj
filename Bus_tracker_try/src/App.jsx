@@ -13,10 +13,10 @@ import { calculateDistance, calculateETA } from "./utils/calculateETA";
 function App() {
   const [selectedBus, setSelectedBus] = useState("BUS101");
   const [buses, setBuses] = useState([]);
+  const [busStatus, setBusStatus] = useState({});
 
   const position = useBusLocation(selectedBus);
 
-  // ✅ DEFINE STOPS FIRST
   const stops = [
     [28.38781797580734, 79.42052491078208],
     [28.369797985579577, 79.4159222405915],
@@ -25,21 +25,32 @@ function App() {
     [28.299557857248416, 79.40464623437381],
   ];
 
-  // ✅ FETCH BUSES
+  // fetch buses
   useEffect(() => {
     fetch("https://unwadeable-isis-unexclaiming.ngrok-free.dev/buses", {
-      headers: {
-        "ngrok-skip-browser-warning": "true",
-      },
+      headers: { "ngrok-skip-browser-warning": "true" },
     })
       .then((res) => res.json())
-      .then((data) => {
-        setBuses(Object.keys(data));
-      })
-      .catch((err) => console.error(err));
+      .then((data) => setBuses(Object.keys(data)))
+      .catch(console.error);
   }, []);
 
-  // ✅ CALCULATE ETA SAFELY
+  // fetch status
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetch("https://unwadeable-isis-unexclaiming.ngrok-free.dev/bus-status", {
+  headers: {
+    "ngrok-skip-browser-warning": "true"
+  }
+})
+        .then((res) => res.json())
+        .then(setBusStatus)
+        .catch(console.error);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const stopsWithETA = position
     ? stops.map((stop) => {
         const distance = calculateDistance(
@@ -48,12 +59,9 @@ function App() {
           stop[0],
           stop[1]
         );
-
-        const eta = calculateETA(distance);
-
         return {
           coords: stop,
-          eta,
+          eta: calculateETA(distance),
         };
       })
     : [];
@@ -64,13 +72,14 @@ function App() {
     iconAnchor: [20, 40],
   });
 
+  const status = busStatus[selectedBus]?.status;
+
   return (
     <div className="h-screen flex flex-col bg-[#020617] text-white">
 
-      {/* HEADER */}
       <Header />
 
-      {/* 🟢 BUS SELECTOR */}
+      {/* BUS SELECT */}
       <div className="flex gap-2 p-2 overflow-x-auto">
         {buses.map((bus) => (
           <button
@@ -78,8 +87,8 @@ function App() {
             onClick={() => setSelectedBus(bus)}
             className={`px-3 py-1 rounded-lg text-sm ${
               selectedBus === bus
-                ? "bg-blue-500 text-white"
-                : "bg-gray-800 text-gray-300"
+                ? "bg-blue-500"
+                : "bg-gray-800"
             }`}
           >
             {bus}
@@ -87,20 +96,30 @@ function App() {
         ))}
       </div>
 
-      {/* LIVE CARD */}
+      {/* ⚠️ STATUS MESSAGE */}
+      {status === "warning" && (
+        <div className="bg-yellow-500 text-black p-2 text-sm text-center">
+          ⚠️ This bus may be experiencing an unexpected delay
+        </div>
+      )}
+
+      {status === "emergency" && (
+        <div className="bg-red-600 p-2 text-sm text-center">
+          🚨 This bus is not responding. Admin has been notified.
+        </div>
+      )}
+
       <div className="p-3">
         <LiveCard position={position} selectedBus={selectedBus} />
       </div>
 
-      {/* MAP */}
       <div className="flex-1">
-        {position && (
+        {position && position[0] && position[1] && (
           <MapView position={position} stops={stops} icon={myBus} />
         )}
       </div>
 
-      {/* 🟢 TIMELINE WITH ETA */}
-      <div className="bg-[#020617] border-t border-gray-800 p-4 max-h-[35%] overflow-y-auto">
+      <div className="p-4 max-h-[35%] overflow-y-auto">
         <Timeline stops={stopsWithETA} />
       </div>
 

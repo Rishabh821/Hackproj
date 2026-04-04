@@ -1,0 +1,101 @@
+from fastapi import FastAPI
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+import time
+app = FastAPI()
+
+origins = [
+    "*",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+buses = {
+    "BUS101": {
+        "lat": 28.3399,
+        "lng": 79.3895,
+        "last_updated": time.time()
+    }
+}
+
+@app.get("/")
+def home():
+    return {"message": "NEW VERSION OF BUS TRACKER IS LIVE! CHECK OUT THE NEW FEATURES!"}
+
+@app.get("/location")
+def get_location(bus_id: str = "BUS101"):
+    return buses.get(bus_id, {"error": "Bus not found"})
+
+@app.post("/update")
+def update_location(bus_id: str, lat: float, lng: float):
+    current_time = time.time()
+
+    if bus_id not in buses:
+        buses[bus_id] = {}
+
+    prev = buses[bus_id]
+
+    # check movement
+    moved = False
+    if "lat" in prev and "lng" in prev:
+        if abs(prev["lat"] - lat) > 0.0001 or abs(prev["lng"] - lng) > 0.0001:
+            moved = True
+
+    # update data
+    buses[bus_id]["lat"] = lat
+    buses[bus_id]["lng"] = lng
+
+    # if moved → reset timer
+    if moved or "last_moved" not in prev:
+        buses[bus_id]["last_moved"] = current_time
+
+    buses[bus_id]["last_updated"] = current_time
+
+    return {"status": "updated"}
+
+@app.get("/buses")
+def get_all_buses():
+    return buses
+@app.post("/sos")
+def sos(bus_id: str, lat: float, lng: float):
+    print(f"🚨 SOS ALERT from {bus_id} at {lat}, {lng}")
+
+    return {
+        "status": "SOS received",
+        "bus_id": bus_id,
+        "lat": lat,
+        "lng": lng
+    }
+@app.get("/check_sos")
+def check_sos():
+    current_time = time.time()
+    alerts = []
+
+    for bus_id, data in buses.items():
+        last_moved = data.get("last_moved", current_time)
+
+        idle_time = current_time - last_moved
+
+        # ⚠️ demo timing (30 sec & 60 sec)
+        if idle_time > 60:
+            alerts.append({
+                "bus_id": bus_id,
+                "status": "EMERGENCY 🚨 (60s no movement)"
+            })
+        elif idle_time > 30:
+            alerts.append({
+                "bus_id": bus_id,
+                "status": "WARNING ⚠️ (30s no movement)"
+            })
+
+    return alerts
+
+@app.get("/driver")
+def driver():
+    return FileResponse("driver.html")
