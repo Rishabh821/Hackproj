@@ -32,7 +32,6 @@
       font-size: 22px;
       font-weight: 600;
       margin-bottom: 20px;
-      letter-spacing: 0.5px;
       color: #f1f5f9;
     }
 
@@ -70,19 +69,9 @@
       color: white;
     }
 
-    .start:hover {
-      transform: scale(1.03);
-      opacity: 0.95;
-    }
-
     .stop {
       background: linear-gradient(135deg, #ef4444, #dc2626);
       color: white;
-    }
-
-    .stop:hover {
-      transform: scale(1.03);
-      opacity: 0.95;
     }
 
     .status {
@@ -107,7 +96,6 @@
       background: #22c55e;
       box-shadow: 0 0 10px #22c55e;
     }
-
   </style>
 </head>
 
@@ -117,7 +105,7 @@
     <div class="title">🚌 Driver Panel</div>
 
     <div class="card">
-      <div class="bus">Bus 101</div>
+      <div class="bus" id="busLabel">Loading...</div>
 
       <button id="toggleBtn" class="start">Start Tracking</button>
 
@@ -132,6 +120,17 @@
   </div>
 
 <script>
+// ✅ Get bus_id from URL
+const params = new URLSearchParams(window.location.search);
+const busId = params.get("bus_id") || "BUS101";
+
+console.log("🚍 Bus ID:", busId);
+
+// ✅ Update UI
+const busLabel = document.getElementById("busLabel");
+busLabel.innerText = busId;
+
+// UI elements
 let watchId = null;
 let tracking = false;
 
@@ -139,6 +138,7 @@ const btn = document.getElementById("toggleBtn");
 const status = document.getElementById("status");
 const coords = document.getElementById("coords");
 
+// Button toggle
 btn.onclick = () => {
   if (!tracking) {
     startTracking();
@@ -166,7 +166,7 @@ function startTracking() {
 
       coords.innerText = `Lat: ${lat.toFixed(5)} | Lng: ${lng.toFixed(5)}`;
 
-      const busId = "BUS102"; // temporary (later from QR)
+      console.log("📡 Sending:", busId, lat, lng);
 
       fetch(`https://unwadeable-isis-unexclaiming.ngrok-free.dev/update?bus_id=${busId}&lat=${lat}&lng=${lng}`, {
         method: "POST"
