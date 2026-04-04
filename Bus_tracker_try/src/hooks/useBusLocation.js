@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 
-export default function useBusLocation() {
+export default function useBusLocation(busId) {
   const [position, setPosition] = useState([28.3399, 79.3895]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetch("https://unwadeable-isis-unexclaiming.ngrok-free.dev/location", {
+      fetch(`https://unwadeable-isis-unexclaiming.ngrok-free.dev/location?bus_id=${busId}`, {
         headers: {
           "ngrok-skip-browser-warning": "true"
         }
@@ -18,7 +18,7 @@ export default function useBusLocation() {
     }, 2000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [busId]);
 
   return position;
 }
