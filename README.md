@@ -144,12 +144,6 @@ https://your-ngrok-url.ngrok-free.dev
 
 ---
 
-## 📸 Screenshots
-
-*Add screenshots here (Student UI, Driver Panel, Map view)*
-
----
-
 ## ⚡ Current Limitations
 
 * No database (in-memory storage only)
@@ -195,10 +189,4 @@ This project demonstrates:
 
 If you like this project, consider giving it a ⭐ on GitHub!
 
----
 
-If you want, next step I can help you:
-
-* add **badges (cool GitHub look)**
-* write a **perfect resume project description**
-* or make this README look **top 1% (animations, GIFs, visuals)**
