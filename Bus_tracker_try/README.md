@@ -1,16 +1,59 @@
-# React + Vite
+# Bus Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This folder is the single app root for the project.
 
-Currently, two official plugins are available:
+## What is inside
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React + Vite student tracker at `/`
+- React admin dashboard at `/admin`
+- FastAPI backend in `main.py`
+- Driver console served by the backend at `/driver`
+- Shared route metadata in `shared/routes.json`
 
-## React Compiler
+## Setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Create or activate a Python environment.
+2. Install backend packages:
 
-## Expanding the ESLint configuration
+```bash
+pip install -r requirements.txt
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+3. Copy the environment file and load it into your shell:
+
+```bash
+cp .env.example .env
+set -a
+source .env
+set +a
+```
+
+4. Start the backend:
+
+```bash
+python3 main.py
+```
+
+5. In another terminal, start the frontend:
+
+```bash
+npm install
+npm run dev
+```
+
+## Default local URLs
+
+- Student tracker: `http://127.0.0.1:5173/`
+- Admin dashboard: `http://127.0.0.1:5173/admin`
+- Driver console: `http://127.0.0.1:8000/driver?bus_id=BUS101&token=demo-driver-token`
+
+The admin dashboard expects the token from `.env` or `.env.example`. The default token is `demo-admin-token`.
+
+## Commands
+
+- `npm run dev` starts the Vite frontend
+- `npm run backend` starts the FastAPI backend
+- `npm run lint` checks the frontend
+- `npm run build` builds the frontend
+- `npm run test:frontend` runs route utility tests
+- `npm run test:backend` runs backend integration tests

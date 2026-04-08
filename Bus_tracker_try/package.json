@@ -5,9 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "backend": "python3 main.py",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "node --test tests/routeUtils.test.js",
+    "test:backend": "python3 -m unittest discover -s tests -p 'test_*.py'"
   },
   "dependencies": {
     "leaflet": "^1.9.4",
@@ -17,6 +21,7 @@
     "react-router-dom": "^7.14.0"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.2.2",
     "@eslint/js": "^9.39.4",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
@@ -25,6 +30,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
+    "tailwindcss": "^4.2.2",
     "vite": "^8.0.1"
   }
 }

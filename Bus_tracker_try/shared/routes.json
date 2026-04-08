@@ -1,0 +1,54 @@
+{
+  "buses": [
+    {
+      "id": "BUS101",
+      "label": "Campus Loop 1",
+      "routeId": "campus-loop"
+    },
+    {
+      "id": "BUS102",
+      "label": "Campus Loop 2",
+      "routeId": "campus-loop"
+    }
+  ],
+  "routes": [
+    {
+      "id": "campus-loop",
+      "name": "Campus Loop",
+      "description": "Hostel Gate to Engineering Block",
+      "averageSpeedKph": 24,
+      "stops": [
+        {
+          "id": "hostel-gate",
+          "name": "Hostel Gate",
+          "lat": 28.38781797580734,
+          "lng": 79.42052491078208
+        },
+        {
+          "id": "library-square",
+          "name": "Library Square",
+          "lat": 28.369797985579577,
+          "lng": 79.4159222405915
+        },
+        {
+          "id": "science-block",
+          "name": "Science Block",
+          "lat": 28.348441891909577,
+          "lng": 79.42009575822425
+        },
+        {
+          "id": "main-canteen",
+          "name": "Main Canteen",
+          "lat": 28.31448233789336,
+          "lng": 79.41885121338126
+        },
+        {
+          "id": "engineering-block",
+          "name": "Engineering Block",
+          "lat": 28.299557857248416,
+          "lng": 79.40464623437381
+        }
+      ]
+    }
+  ]
+}

@@ -1,57 +1,57 @@
-import { useState } from "react";
+import { formatEta, getStatusCopy } from "../utils/routeUtils";
 
-export default function LiveCard({ position, selectedBus }) {
-  const [loading, setLoading] = useState(false);
-
-  const sendSOS = () => {
-    if (!position) return;
-
-    setLoading(true);
-
-    fetch(
-      `https://unwadeable-isis-unexclaiming.ngrok-free.dev/sos?bus_id=${selectedBus}&lat=${position[0]}&lng=${position[1]}`,
-      {
-        method: "POST",
-      }
-    )
-      .then(() => {
-        alert("🚨 SOS sent!");
-      })
-      .catch(() => {
-        alert("❌ Failed to send SOS");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
+export default function LiveCard({ bus, route, nextStop, currentStop, lastUpdatedText }) {
+  const destination = route?.stops?.[route.stops.length - 1];
+  const badgeClass =
+    bus?.status === "emergency"
+      ? "bg-red-500/20 text-red-200"
+      : bus?.status === "warning"
+      ? "bg-amber-500/20 text-amber-200"
+      : "bg-emerald-500/20 text-emerald-200";
 
   return (
-    <div className="bg-[#020617] border border-gray-800 p-4 rounded-2xl shadow-xl space-y-3">
+    <div className="rounded-3xl border border-slate-800/80 bg-slate-950/70 p-5 shadow-2xl shadow-slate-950/30">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs uppercase tracking-[0.25em] text-sky-300">
+            {bus?.bus_id || "Bus"}
+          </p>
+          <h2 className="mt-2 text-2xl font-semibold text-slate-50">
+            {route?.name || "Campus route"}
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-slate-300">
+            {route?.description || "Waiting for route metadata."}
+          </p>
+        </div>
 
-      <div className="flex justify-between items-center">
-        <div className="text-sm text-gray-400">Next Stop</div>
-
-        <div className="flex items-center text-xs bg-red-500 px-2 py-1 rounded-full">
-          <div className="w-2 h-2 bg-red-700 rounded-full mr-2 animate-pulse"></div>
-          Live
+        <div className={`rounded-full px-3 py-1 text-xs font-medium ${badgeClass}`}>
+          {bus?.status || "no_data"}
         </div>
       </div>
 
-      <div className="text-lg font-semibold">Engineering Block</div>
+      <div className="mt-6 grid gap-4 rounded-2xl bg-slate-900/70 p-4 sm:grid-cols-2">
+        <div>
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Next stop</p>
+          <p className="mt-2 text-lg font-semibold text-slate-100">
+            {nextStop?.name || destination?.name || "Waiting for live location"}
+          </p>
+          <p className="mt-2 text-sm text-slate-400">
+            {nextStop ? formatEta(nextStop.etaMinutes) : "No ETA until the first GPS update"}
+          </p>
+        </div>
 
-      <div className="text-sm text-gray-400">
-        Arriving in <span className="text-white font-medium">5 mins</span>
+        <div>
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Current position</p>
+          <p className="mt-2 text-lg font-semibold text-slate-100">
+            {currentStop?.name || "Between stops"}
+          </p>
+          <p className="mt-2 text-sm text-slate-400">{lastUpdatedText}</p>
+        </div>
       </div>
 
-      {/* 🚨 SOS BUTTON */}
-      <button
-        onClick={sendSOS}
-        disabled={loading}
-        className="w-full bg-red-600 hover:bg-red-700 transition p-3 rounded-xl font-semibold"
-      >
-        {loading ? "Sending..." : "🚨 SOS"}
-      </button>
-
+      <p className="mt-5 text-sm leading-6 text-slate-300">
+        {getStatusCopy(bus?.status)}
+      </p>
     </div>
   );
 }
